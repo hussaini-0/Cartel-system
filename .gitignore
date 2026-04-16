@@ -1,0 +1,23 @@
+# Environment
+.env
+
+# WhatsApp session
+.wwebjs_auth/
+.wwebjs_cache/
+
+# QR code (regenerated on each startup)
+qr.png
+
+# Screenshots (user data, keep out of repo)
+screenshots/
+
+# Node
+node_modules/
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db

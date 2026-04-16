@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cartel Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+
+  <script>
+    if (!localStorage.getItem("adminToken")) {
+      window.location.href = "./login.html";
+    }
+  </script>
+
+  <nav class="navbar">
+    <img src="assets/cartellogo.png" class="logo">
+    <h2 style="color:#eee195;letter-spacing:1px">Cartel Admin</h2>
+
+    <div class="nav-links">
+      <button type="button" data-section="dashboard">Dashboard</button>
+      <button type="button" data-section="completed">Completed</button>
+      <button type="button" data-section="takeOrder">Take Order</button>
+      <button type="button" data-section="inventory">Inventory</button>
+      <button type="button" data-section="notifier">WhatsApp QR</button>
+      <button type="button" id="logoutButton" style="background:#555">Logout</button>
+    </div>
+  </nav>
+
+  <!-- DASHBOARD -->
+  <div id="dashboard" class="section active">
+    <div class="container">
+      <div class="column" id="confirmed"><h2>Pending</h2></div>
+      <div class="column" id="preparing"><h2>Preparing</h2></div>
+      <div class="column" id="ready"><h2>Ready</h2></div>
+    </div>
+  </div>
+
+  <!-- COMPLETED -->
+  <div id="completed" class="section">
+    <h2>Completed Orders</h2>
+    <div id="completedList"></div>
+  </div>
+
+  <!-- INVENTORY -->
+  <div id="inventory" class="section">
+    <h2>Inventory</h2>
+
+    <div class="inventory-layout">
+      <div class="inventory-panel">
+        <h3>Current Stock</h3>
+        <div class="inventory-cards">
+          <div class="inventory-card">
+            <span>Patties</span>
+            <strong id="inventoryPatties">450</strong>
+          </div>
+          <div class="inventory-card">
+            <span>Buns</span>
+            <strong id="inventoryBuns">350</strong>
+          </div>
+        </div>
+        <p id="inventoryUpdatedAt" class="helper-text">Stock updates appear here.</p>
+      </div>
+
+      <div class="inventory-panel">
+        <h3>Adjust Stock</h3>
+        <label for="inventoryPattiesInput">Patties</label>
+        <input id="inventoryPattiesInput" type="number" min="0" step="1" />
+
+        <label for="inventoryBunsInput">Buns</label>
+        <input id="inventoryBunsInput" type="number" min="0" step="1" />
+
+        <button onclick="saveInventory()">Save Inventory</button>
+        <p id="inventoryStatus" class="helper-text"></p>
+      </div>
+    </div>
+  </div>
+
+  <div id="notifier" class="section">
+    <h2>WhatsApp Notifier</h2>
+
+    <div class="inventory-panel qr-panel">
+      <h3>Login QR</h3>
+      <p class="helper-text">Scan this QR with the business WhatsApp account used for ready notifications. If the notifier is already logged in, a new QR may not be shown.</p>
+      <div class="qr-frame">
+        <img id="qrImage" alt="WhatsApp QR code" style="display:none" />
+        <p id="qrStatus" class="helper-text">Click refresh to load the QR.</p>
+      </div>
+      <button onclick="loadQrCode()">Refresh QR</button>
+    </div>
+  </div>
+
+  <!-- TAKE ORDER (POS STYLE) -->
+  <div id="takeOrder" class="section">
+
+    <div class="pos-container">
+
+      <!-- MENU -->
+      <div class="menu">
+        <h3>Menu</h3>
+        <div id="menuList"></div>
+
+      </div>
+
+      <!-- SUMMARY -->
+      <div class="summary">
+        <h3>Order Summary</h3>
+        <div class="stock-strip">
+          <div class="stock-pill">Patties <strong id="posPatties">450</strong></div>
+          <div class="stock-pill">Buns <strong id="posBuns">350</strong></div>
+        </div>
+        <div id="orderSummary"></div>
+        <h2>Total: Rs <span id="total">0</span></h2>
+        <input id="customerPhone" type="tel" placeholder="Customer WhatsApp number" required />
+        <p class="helper-text">Customer WhatsApp number is required. They will get a ready notification when the order is marked ready. Each burger consumes 1 patty and 1 bun.</p>
+        <button id="createOrderButton" onclick="submitOrder()">Take Payment & Create Order</button>
+      </div>
+
+      <div class="receipt-workspace">
+        <h3>Receipt Preview</h3>
+        <p id="receiptStatus" class="helper-text">Create an order to review and print the receipt here.</p>
+
+        <div class="receipt-toolbar">
+          <button id="printReceiptButton" class="receipt-btn" onclick="printCurrentReceipt()" disabled>Print Receipt</button>
+          <button id="newOrderButton" onclick="startNextOrder()" disabled>Next Order</button>
+        </div>
+
+        <div class="receipt-preview-shell">
+          <iframe id="receiptPreviewFrame" title="Receipt Preview"></iframe>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <script src="http://localhost:5000/socket.io/socket.io.js"></script>
+  <script src="./app.js?v=20260417-2"></script>
+
+</body>
+</html>

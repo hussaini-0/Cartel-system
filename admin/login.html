@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cartel Admin — Login</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./style.css">
+  <style>
+    body { display: flex; align-items: center; justify-content: center; min-height: 100vh; background: #1e0009; }
+    .login-box {
+      background: #2e0011;
+      border: 1px solid #5a0022;
+      padding: 44px 40px;
+      border-radius: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+      width: 320px;
+    }
+    .login-box h2 { font-size: 22px; font-weight: 700; color: #eee195; }
+    .login-box input {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 8px;
+      border: 1px solid #3d0018;
+      background: #2e0011;
+      color: #eee195;
+      font-size: 15px;
+      outline: none;
+    }
+    .login-box input:focus { border-color: #6b0020; }
+    .login-box input::placeholder { color: #9e8a60; }
+    .login-box button {
+      width: 100%;
+      padding: 13px;
+      background: #6b0020;
+      color: #eee195;
+      border: none;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.15s;
+      margin-top: 0;
+    }
+    .login-box button:hover { background: #8a0028; }
+    .login-box button:disabled { opacity: 0.45; cursor: not-allowed; }
+    .error { color: #e06080; font-size: 13px; min-height: 16px; text-align: center; }
+  </style>
+</head>
+<body>
+  <div class="login-box">
+    <img src="assets/cartellogo.png" style="height:60px">
+    <h2>Cartel Burgers</h2>
+    <p style="color:#9e8a60;font-size:13px;margin:-8px 0 4px">Admin Portal</p>
+    <input type="password" id="password" placeholder="Password" />
+    <p class="error" id="errorMsg"></p>
+    <button id="loginBtn" onclick="login()">Login</button>
+  </div>
+
+  <script>
+    if (localStorage.getItem("adminToken")) {
+      window.location.href = "./index.html";
+    }
+
+    async function login() {
+      const password = document.getElementById("password").value.trim();
+      const errorMsg = document.getElementById("errorMsg");
+      const btn = document.getElementById("loginBtn");
+      errorMsg.textContent = "";
+
+      if (!password) {
+        errorMsg.textContent = "Password is required.";
+        return;
+      }
+
+      btn.disabled = true;
+
+      try {
+        const res = await fetch("http://localhost:5000/auth/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ password })
+        });
+
+        if (!res.ok) {
+          errorMsg.textContent = "Incorrect password.";
+          return;
+        }
+
+        const { token } = await res.json();
+        localStorage.setItem("adminToken", token);
+        window.location.href = "./index.html";
+      } catch {
+        errorMsg.textContent = "Server error. Is the server running?";
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    document.getElementById("password").addEventListener("keydown", e => {
+      if (e.key === "Enter") login();
+    });
+  </script>
+</body>
+</html>

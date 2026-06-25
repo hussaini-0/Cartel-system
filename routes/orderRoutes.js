@@ -11,7 +11,14 @@ const {
   verifyPayment,
   getPaymentStats,
   getInventory,
-  updateInventory
+  updateInventory,
+  getMenu,
+  saveMenuItem,
+  deleteMenuItem,
+  markAllReady,
+  markAllDelivered,
+  editOrder,
+  deleteOrder
 } = require("../controllers/orderController");
 
 // 🆕 CREATE ORDER
@@ -22,6 +29,11 @@ router.get("/", getOrders);
 
 router.get("/inventory", getInventory);
 router.post("/inventory", updateInventory);
+router.get("/menu", getMenu);
+router.post("/menu", saveMenuItem);
+router.delete("/menu/:key", deleteMenuItem);
+router.post("/bulk/ready", markAllReady);
+router.post("/bulk/delivered", markAllDelivered);
 
 // 🍳 PREPARING (NEW)
 router.post("/:id/preparing", markPreparing);
@@ -35,5 +47,11 @@ router.post("/:id/markPaid", markPaid);
 router.post("/:id/delivered", markDelivered);
 router.post("/:id/verifyPayment", verifyPayment);
 router.get("/stats/payments", getPaymentStats);
+
+// ✏️ EDIT ORDER
+router.patch("/:id", editOrder);
+
+// 🗑️ DELETE ORDER
+router.delete("/:id", deleteOrder);
 
 module.exports = router;

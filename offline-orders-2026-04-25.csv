@@ -1,0 +1,22 @@
+_id,orderId,customerName,phone,status,paymentMethod,paymentStatus,total,eta,priority,createdAt,updatedAt,offline,syncedAt,items
+offline-1246,1246,sara,Walk-in,completed,cash,paid,449,15,false,2026-04-25T16:21:18.821Z,2026-04-26T09:50:25.536Z,true,2026-04-25T16:26:47.629Z,curly%20fries%20with%20sauce|1|449
+offline-1245,1245,kashmala,Walk-in,completed,cash,paid,449,15,false,2026-04-25T16:17:29.478Z,2026-04-26T09:50:25.538Z,true,2026-04-25T16:26:47.629Z,curly%20fries%20with%20sauce|1|449
+offline-1244,1244,reeja rizvi lovely,Walk-in,completed,cash,paid,349,15,false,2026-04-25T16:05:20.004Z,2026-04-26T09:50:25.541Z,true,2026-04-25T16:26:47.629Z,fries|1|349
+offline-1243,1243,hania,Walk-in,completed,cash,paid,449,15,false,2026-04-25T16:00:49.498Z,2026-04-26T09:50:25.543Z,true,2026-04-25T16:26:47.629Z,curly%20fries%20with%20sauce|1|449
+offline-1242,1242,arwa,Walk-in,completed,cash,paid,449,15,false,2026-04-25T15:58:54.748Z,2026-04-26T09:50:25.545Z,true,2026-04-25T16:26:47.629Z,curly%20fries%20with%20sauce|1|449
+offline-1241,1241,ali,Walk-in,completed,cash,paid,449,15,false,2026-04-25T15:58:00.265Z,2026-04-26T09:50:25.547Z,true,2026-04-25T16:26:47.629Z,curly%20fries%20with%20sauce|1|449
+offline-1240,1240,naeema,Walk-in,completed,cash,paid,898,15,false,2026-04-25T15:57:38.321Z,2026-04-26T09:50:25.550Z,true,2026-04-25T16:26:47.629Z,curly%20fries%20with%20sauce|2|449
+offline-1239,1239,musfira,Walk-in,completed,cash,paid,449,15,false,2026-04-25T15:55:48.650Z,2026-04-26T09:50:25.552Z,true,2026-04-25T16:26:47.629Z,curly%20fries%20with%20sauce|1|449
+offline-1238,1238,humaid,Walk-in,completed,cash,paid,449,15,false,2026-04-25T15:54:44.573Z,2026-04-26T09:50:25.555Z,true,2026-04-25T16:26:47.629Z,curly%20fries%20with%20sauce|1|449
+offline-1237,1237,aiman,Walk-in,completed,cash,paid,549,15,false,2026-04-25T15:49:47.619Z,2026-04-26T09:50:25.558Z,true,2026-04-25T16:26:47.629Z,curly%20fries%20with%20sauce|1|449;water|1|100
+offline-1236,1236,hiba,Walk-in,completed,cash,paid,449,15,false,2026-04-25T15:48:34.890Z,2026-04-26T09:50:25.560Z,true,2026-04-25T16:26:47.629Z,curly%20fries%20with%20sauce|1|449
+offline-1235,1235,safwan,Walk-in,completed,cash,paid,349,15,false,2026-04-25T15:42:52.515Z,2026-04-26T09:50:25.563Z,true,2026-04-25T16:26:47.629Z,fries|1|349
+offline-1234,1234,ayan,Walk-in,completed,cash,paid,449,15,false,2026-04-25T15:39:54.727Z,2026-04-26T09:50:25.565Z,true,2026-04-25T16:26:47.629Z,curly%20fries%20with%20sauce|1|449
+offline-1233,1233,hiba,Walk-in,completed,cash,paid,798,15,false,2026-04-25T15:39:13.185Z,2026-04-26T09:50:25.568Z,true,2026-04-25T16:26:47.629Z,fries|1|349;curly%20fries%20with%20sauce|1|449
+offline-1232,1232,mustafa tall,Walk-in,completed,cash,paid,449,15,false,2026-04-25T15:38:19.268Z,2026-04-26T09:50:25.571Z,true,2026-04-25T16:26:47.629Z,curly%20fries%20with%20sauce|1|449
+offline-1231,1231,musab,Walk-in,completed,cash,paid,798,15,false,2026-04-25T15:36:27.449Z,2026-04-26T09:50:25.573Z,true,2026-04-25T16:26:47.629Z,fries|1|349;curly%20fries%20with%20sauce|1|449
+offline-1230,1230,JD,Walk-in,completed,cash,paid,898,15,false,2026-04-25T15:33:20.363Z,2026-04-26T09:50:25.575Z,true,2026-04-25T16:26:47.629Z,curly%20fries%20with%20sauce|2|449
+offline-1229,1229,ahmed,Walk-in,completed,cash,paid,449,15,false,2026-04-25T15:32:18.872Z,2026-04-26T09:50:25.577Z,true,2026-04-25T16:26:47.629Z,curly%20fries%20with%20sauce|1|449
+offline-1228,1228,hayan,Walk-in,completed,cash,paid,349,15,false,2026-04-25T15:24:44.997Z,2026-04-26T09:50:25.578Z,true,2026-04-25T16:26:47.629Z,fries|1|349
+offline-1227,1227,uzair,Walk-in,completed,cash,paid,449,15,false,2026-04-25T15:23:41.705Z,2026-04-26T09:50:25.580Z,true,2026-04-25T16:26:47.629Z,curly%20fries%20with%20sauce|1|449
+offline-1226,1226,fatima,Walk-in,completed,cash,paid,449,15,false,2026-04-25T15:20:59.686Z,2026-04-26T09:50:25.582Z,true,2026-04-25T16:26:47.629Z,curly%20fries%20with%20sauce|1|449

@@ -22,10 +22,12 @@
     <h2 style="color:#eee195;letter-spacing:1px">Cartel Admin</h2>
 
     <div class="nav-links">
+      <span id="dbStatus" class="db-badge offline" title="Database status">DB: checking…</span>
       <button type="button" data-section="dashboard">Dashboard</button>
       <button type="button" data-section="completed">Completed</button>
-      <button type="button" data-section="takeOrder">Take Order</button>
+      <button type="button" data-section="revenue">Revenue</button>
       <button type="button" data-section="inventory">Inventory</button>
+      <button type="button" data-section="menuManager">Menu</button>
       <button type="button" data-section="notifier">WhatsApp QR</button>
       <button type="button" id="logoutButton" style="background:#555">Logout</button>
     </div>
@@ -33,17 +35,150 @@
 
   <!-- DASHBOARD -->
   <div id="dashboard" class="section active">
-    <div class="container">
-      <div class="column" id="confirmed"><h2>Pending</h2></div>
-      <div class="column" id="preparing"><h2>Preparing</h2></div>
-      <div class="column" id="ready"><h2>Ready</h2></div>
+    <div class="dashboard-shell">
+      <div class="dashboard-top-grid">
+        <div class="menu menu-panel">
+          <h3>Burgers & Curly Fries</h3>
+          <div id="menuSavory"></div>
+        </div>
+
+        <div class="menu menu-panel">
+          <h3>Drinks</h3>
+          <div id="menuDrinks"></div>
+        </div>
+
+        <div class="summary customer-panel">
+          <h3>Customer Details</h3>
+          <div class="stock-strip">
+            <div class="stock-pill">Patties <strong id="posPatties">450</strong></div>
+            <div class="stock-pill">Buns <strong id="posBuns">350</strong></div>
+          </div>
+          <div id="orderSummary"></div>
+          <h2>Total: Rs <span id="total">0</span></h2>
+          <input id="customerName" type="text" placeholder="Customer name" required />
+          <input id="customerPhone" type="tel" placeholder="Customer WhatsApp number (optional)" />
+          <div class="payment-toggle">
+            <label>Payment:</label>
+            <button type="button" class="pay-btn active" data-method="cash">Cash</button>
+            <button type="button" class="pay-btn" data-method="jazzcash">JazzCash</button>
+          </div>
+          <p class="helper-text">Customer name is required. WhatsApp number is optional and will be used for ready notifications when provided. Single burgers consume 1 patty and 1 bun, double burgers consume 2 patties and 1 bun.</p>
+          <button id="createOrderButton" onclick="submitOrder()">Take Payment & Create Order</button>
+        </div>
+
+        <div class="receipt-workspace receipt-panel">
+          <h3>Receipt Preview</h3>
+          <p id="receiptStatus" class="helper-text">Create an order to review and print the receipt here.</p>
+
+          <div class="receipt-toolbar">
+            <button id="printReceiptButton" class="receipt-btn" onclick="printCurrentReceipt()" disabled>Print Receipt</button>
+            <button id="newOrderButton" onclick="startNextOrder()" disabled>Next Order</button>
+          </div>
+
+          <div class="receipt-preview-shell">
+            <iframe id="receiptPreviewFrame" title="Receipt Preview"></iframe>
+          </div>
+        </div>
+      </div>
+
+      <div class="dashboard-followup">
+        <div class="dashboard-status-panel">
+          <h2>Order Follow Up</h2>
+          <p class="helper-text">WhatsApp is optional. Orders with a number are surfaced first in the notification queue.</p>
+          <div class="sync-panel">
+            <span id="offlineSyncStatus" class="helper-text">Sync status loading...</span>
+            <button type="button" class="mark-all-btn" id="syncOfflineButton" onclick="runOfflineSync()">Sync Now</button>
+          </div>
+          <div class="filter-toolbar">
+            <button type="button" class="filter-btn active" data-filter="all" onclick="setOrderFilter('all')">All</button>
+            <button type="button" class="filter-btn" data-filter="preparing" onclick="setOrderFilter('preparing')">Preparing</button>
+            <button type="button" class="filter-btn" data-filter="ready" onclick="setOrderFilter('ready')">Ready</button>
+            <button type="button" class="filter-btn" data-filter="whatsapp" onclick="setOrderFilter('whatsapp')">WhatsApp</button>
+            <button type="button" class="filter-btn" data-filter="walkin" onclick="setOrderFilter('walkin')">Walk-in</button>
+            <button type="button" class="filter-btn" data-filter="cash" onclick="setOrderFilter('cash')">Cash</button>
+            <button type="button" class="filter-btn" data-filter="jazzcash" onclick="setOrderFilter('jazzcash')">JazzCash</button>
+          </div>
+          <div class="bulk-toolbar">
+            <span id="selectedOrderCount" class="helper-text">0 selected</span>
+            <button type="button" class="mark-all-btn" onclick="selectVisibleOrders()">Select Visible</button>
+            <button type="button" class="mark-all-btn" onclick="clearSelectedOrders()">Clear</button>
+            <button type="button" class="mark-all-btn bulk-action" onclick="markSelectedReady()">Selected Ready</button>
+            <button type="button" class="mark-all-btn bulk-action" onclick="markSelectedDelivered()">Selected Delivered</button>
+          </div>
+          <div class="receipt-search">
+            <input id="receiptSearchInput" class="followup-search" type="search" placeholder="Find receipt to reprint" oninput="renderReceiptSearch(this.value)" />
+            <div id="receiptSearchResults" class="receipt-search-results"></div>
+          </div>
+          <input id="followUpSearch" class="followup-search" type="search" placeholder="Search receipt number" oninput="handleFollowUpSearch(this.value)" />
+          <div class="dashboard-queue">
+            <div class="column" id="preparing"><h2>Notify Customer</h2></div>
+            <div class="column" id="ready"><div class="column-header"><h2>Ready</h2><button class="mark-all-btn" onclick="markAllDelivered()">Mark All Delivered</button></div></div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
   <!-- COMPLETED -->
   <div id="completed" class="section">
     <h2>Completed Orders</h2>
+    <div class="revenue-controls">
+      <button type="button" class="completed-filter active" data-range="today" onclick="setCompletedRange('today')">Today</button>
+      <button type="button" class="completed-filter" data-range="yesterday" onclick="setCompletedRange('yesterday')">Yesterday</button>
+      <button type="button" class="completed-filter" data-range="all" onclick="setCompletedRange('all')">All</button>
+      <input id="completedDateInput" type="date" onchange="setCompletedDate(this.value)" />
+    </div>
     <div id="completedList"></div>
+  </div>
+
+  <!-- REVENUE -->
+  <div id="revenue" class="section">
+    <h2>Revenue</h2>
+
+    <div class="revenue-controls">
+      <button type="button" class="revenue-filter active" data-range="today" onclick="setRevenueRange('today')">Today</button>
+      <button type="button" class="revenue-filter" data-range="yesterday" onclick="setRevenueRange('yesterday')">Yesterday</button>
+      <button type="button" class="revenue-filter" data-range="all" onclick="setRevenueRange('all')">All</button>
+      <input id="revenueDateInput" type="date" onchange="setRevenueDate(this.value)" />
+    </div>
+
+    <div class="revenue-grid">
+      <div class="stat-card">
+        <h4>Total Revenue</h4>
+        <strong id="revenueTotalValue" class="stat-value">Rs 0</strong>
+      </div>
+
+      <div class="stat-card">
+        <h4>Cash Revenue</h4>
+        <strong id="revenueCashValue" class="stat-value">Rs 0</strong>
+      </div>
+
+      <div class="stat-card">
+        <h4>JazzCash Revenue</h4>
+        <strong id="revenueJazzValue" class="stat-value">Rs 0</strong>
+      </div>
+
+      <div class="stat-card">
+        <h4>Pending Verifications</h4>
+        <strong id="revenuePendingCount" class="stat-value">0</strong>
+      </div>
+
+      <div class="stat-card">
+        <h4>Completed Orders</h4>
+        <strong id="revenueCompletedCount" class="stat-value">0</strong>
+      </div>
+
+      <div class="stat-card">
+        <h4>Total Orders</h4>
+        <strong id="revenueOrderCount" class="stat-value">0</strong>
+      </div>
+    </div>
+
+    <div class="inventory-panel revenue-panel">
+      <h3>Pending Payment Verifications</h3>
+      <p id="revenueStatus" class="helper-text">Revenue stats will appear here.</p>
+      <div id="pendingVerificationList"></div>
+    </div>
   </div>
 
   <!-- INVENTORY -->
@@ -63,6 +198,7 @@
             <strong id="inventoryBuns">350</strong>
           </div>
         </div>
+        <div id="inventoryWarnings" class="inventory-warnings"></div>
         <p id="inventoryUpdatedAt" class="helper-text">Stock updates appear here.</p>
       </div>
 
@@ -76,6 +212,68 @@
 
         <button onclick="saveInventory()">Save Inventory</button>
         <p id="inventoryStatus" class="helper-text"></p>
+      </div>
+
+      <div class="inventory-panel inventory-sales-panel">
+        <h3>Sold Per Item</h3>
+        <div class="revenue-controls">
+          <button type="button" class="inventory-filter active" data-range="today" onclick="setInventoryRange('today')">Today</button>
+          <button type="button" class="inventory-filter" data-range="yesterday" onclick="setInventoryRange('yesterday')">Yesterday</button>
+          <button type="button" class="inventory-filter" data-range="all" onclick="setInventoryRange('all')">All</button>
+          <input id="inventoryDateInput" type="date" onchange="setInventoryDate(this.value)" />
+        </div>
+        <div id="inventorySoldCounts" class="inventory-sales-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="menuManager" class="section">
+    <h2>Menu</h2>
+
+    <div class="menu-manager-layout">
+      <div class="inventory-panel">
+        <h3 id="menuFormTitle">Add Menu Item</h3>
+        <label for="menuItemName">Item name</label>
+        <input id="menuItemName" type="text" placeholder="Loaded Fries" />
+
+        <label for="menuItemPrice">Price</label>
+        <input id="menuItemPrice" type="number" min="0" step="1" placeholder="499" />
+
+        <label for="menuItemCategory">Category</label>
+        <select id="menuItemCategory">
+          <option value="burgers">Burgers</option>
+          <option value="fries">Curly Fries</option>
+          <option value="signature">Signature Drinks</option>
+          <option value="specials">Specials</option>
+          <option value="drinks">Drinks</option>
+        </select>
+
+        <div class="menu-options-grid">
+          <label>
+            Patties
+            <input id="menuItemPatties" type="number" min="0" step="1" value="0" />
+          </label>
+          <label>
+            Buns
+            <input id="menuItemBuns" type="number" min="0" step="1" value="0" />
+          </label>
+        </div>
+
+        <label class="checkbox-row">
+          <input id="menuItemComboDrink" type="checkbox" />
+          Combo drink discount eligible
+        </label>
+
+        <div class="menu-form-actions">
+          <button id="menuSaveButton" type="button" onclick="saveMenuItem()">Save Item</button>
+          <button id="menuCancelEditButton" type="button" class="mark-all-btn" onclick="cancelMenuEdit()" hidden>Cancel</button>
+        </div>
+        <p id="menuManagerStatus" class="helper-text"></p>
+      </div>
+
+      <div class="inventory-panel">
+        <h3>Current Menu</h3>
+        <div id="menuManagerList" class="menu-manager-list"></div>
       </div>
     </div>
   </div>
@@ -94,52 +292,8 @@
     </div>
   </div>
 
-  <!-- TAKE ORDER (POS STYLE) -->
-  <div id="takeOrder" class="section">
-
-    <div class="pos-container">
-
-      <!-- MENU -->
-      <div class="menu">
-        <h3>Menu</h3>
-        <div id="menuList"></div>
-
-      </div>
-
-      <!-- SUMMARY -->
-      <div class="summary">
-        <h3>Order Summary</h3>
-        <div class="stock-strip">
-          <div class="stock-pill">Patties <strong id="posPatties">450</strong></div>
-          <div class="stock-pill">Buns <strong id="posBuns">350</strong></div>
-        </div>
-        <div id="orderSummary"></div>
-        <h2>Total: Rs <span id="total">0</span></h2>
-        <input id="customerPhone" type="tel" placeholder="Customer WhatsApp number" required />
-        <p class="helper-text">Customer WhatsApp number is required. They will get a ready notification when the order is marked ready. Each burger consumes 1 patty and 1 bun.</p>
-        <button id="createOrderButton" onclick="submitOrder()">Take Payment & Create Order</button>
-      </div>
-
-      <div class="receipt-workspace">
-        <h3>Receipt Preview</h3>
-        <p id="receiptStatus" class="helper-text">Create an order to review and print the receipt here.</p>
-
-        <div class="receipt-toolbar">
-          <button id="printReceiptButton" class="receipt-btn" onclick="printCurrentReceipt()" disabled>Print Receipt</button>
-          <button id="newOrderButton" onclick="startNextOrder()" disabled>Next Order</button>
-        </div>
-
-        <div class="receipt-preview-shell">
-          <iframe id="receiptPreviewFrame" title="Receipt Preview"></iframe>
-        </div>
-      </div>
-
-    </div>
-
-  </div>
-
-  <script src="http://localhost:5000/socket.io/socket.io.js"></script>
-  <script src="./app.js?v=20260417-2"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="./app.js?v=20260425-inventory-dates"></script>
 
 </body>
 </html>

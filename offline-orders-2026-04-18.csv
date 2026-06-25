@@ -1,0 +1,2 @@
+_id,orderId,customerName,phone,status,paymentMethod,paymentStatus,total,eta,priority,createdAt,updatedAt,offline,syncedAt,items
+offline-1001,1001,tabish,Walk-in,completed,cash,paid,849,15,false,2026-04-18T15:20:43.961Z,2026-04-24T22:32:05.196Z,true,2026-04-24T22:32:13.586Z,don%20og%20(single)|1|849

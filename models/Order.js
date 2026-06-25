@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 
 const orderSchema = new mongoose.Schema({
   orderId: Number,
+  customerName: String,
   phone: String,
 
   // ✅ STRUCTURED ITEMS
@@ -42,10 +43,24 @@ const orderSchema = new mongoose.Schema({
     default: false
   },
 
+  offlineSourceId: {
+    type: String
+  },
+
+  syncedFromOffline: {
+    type: Boolean,
+    default: false
+  },
+
   createdAt: {
     type: Date,
     default: Date.now
   }
 });
+
+orderSchema.index(
+  { offlineSourceId: 1 },
+  { unique: true, sparse: true }
+);
 
 module.exports = mongoose.model("Order", orderSchema);
